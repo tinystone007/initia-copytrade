@@ -1,0 +1,13 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc_version = "0.8.20"
+optimizer = true
+optimizer_runs = 200
+via_ir = true
+evm_version = "paris"
+
+[rpc_endpoints]
+local_rollup = "http://localhost:8545"
+initia_testnet = "${MINIEVM_RPC_URL}"

@@ -1,0 +1,28 @@
+{
+  "project_name": "CopyTrade",
+  "description": "Social copy-trading platform on Initia. Follow top traders, auto-mirror their trades with session keys, build reputation with .init usernames.",
+  "repo_url": "",
+  "commit_sha": "",
+  "vm_type": "minievm",
+  "chain_id": "",
+  "evm_chain_id": "",
+  "deployed_contracts": {
+    "SimpleAMM": "",
+    "CopyTradeRouter": "",
+    "USDC": "",
+    "WINIT": "",
+    "WETH": ""
+  },
+  "native_features": [
+    "auto-signing",
+    "interwoven-bridge",
+    "initia-usernames"
+  ],
+  "native_feature_paths": {
+    "auto-signing": "frontend/src/config/wagmi.ts",
+    "interwoven-bridge": "frontend/src/components/Layout.tsx",
+    "initia-usernames": "frontend/src/hooks/useTraderInfo.ts"
+  },
+  "demo_video_url": "",
+  "live_app_url": ""
+}
