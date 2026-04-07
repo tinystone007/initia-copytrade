@@ -1,0 +1,39 @@
+#!/usr/bin/expect -f
+set timeout 30
+
+spawn weave init
+
+# Step 1: Select "Generate new account"
+expect "How would you like to setup your Gas station account?"
+sleep 1
+send "\r"
+
+# Wait and capture output
+expect {
+    "mnemonic" { }
+    "fund" { }
+    timeout { }
+}
+
+# Keep interacting - press Enter to continue through prompts
+sleep 2
+send "\r"
+sleep 2
+send "\r"
+sleep 2
+send "\r"
+
+# Wait for it to finish or show next prompt
+expect {
+    "faucet" { }
+    "fund" { }
+    "INIT" { }
+    eof { }
+    timeout { }
+}
+
+sleep 2
+send "\r"
+sleep 2
+
+interact
