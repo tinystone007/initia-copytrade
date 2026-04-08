@@ -1,12 +1,159 @@
 @import "tailwindcss";
 
+@theme {
+  --color-glass: rgba(15, 23, 42, 0.6);
+  --color-glass-border: rgba(99, 102, 241, 0.15);
+  --color-glass-border-hover: rgba(99, 102, 241, 0.35);
+  --color-accent-glow: rgba(99, 102, 241, 0.25);
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #0a0a1a;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #06061a;
   color: #e2e8f0;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-#root { min-height: 100vh; }
+#root {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(99, 102, 241, 0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 80% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 10% 80%, rgba(6, 182, 212, 0.06) 0%, transparent 60%),
+    linear-gradient(180deg, #06061a 0%, #0a0a2e 50%, #06061a 100%);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
+}
+
+/* Glass morphism card */
+.glass-card {
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(99, 102, 241, 0.12);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.glass-card:hover {
+  border-color: rgba(99, 102, 241, 0.25);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #818cf8 0%, #a78bfa 40%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient text warm */
+.gradient-text-warm {
+  background: linear-gradient(135deg, #f472b6 0%, #a78bfa 50%, #818cf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow effects */
+.glow-indigo {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15), 0 0 60px rgba(99, 102, 241, 0.05);
+}
+.glow-indigo-strong {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), 0 0 60px rgba(99, 102, 241, 0.1);
+}
+.glow-purple {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), 0 0 60px rgba(139, 92, 246, 0.05);
+}
+
+/* Gradient border button */
+.gradient-border-btn {
+  position: relative;
+  background: transparent;
+  z-index: 0;
+}
+.gradient-border-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #818cf8, #a78bfa, #22d3ee);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  z-index: -1;
+}
+
+/* Gradient fill button */
+.gradient-btn {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  transition: all 0.3s ease;
+}
+.gradient-btn:hover:not(:disabled) {
+  box-shadow: 0 0 24px rgba(99, 102, 241, 0.4), 0 0 64px rgba(139, 92, 246, 0.15);
+  transform: translateY(-1px);
+}
+.gradient-btn:disabled {
+  background: rgba(30, 41, 59, 0.8);
+  color: rgba(148, 163, 184, 0.5);
+  box-shadow: none;
+  transform: none;
+}
+
+/* Pulse animation for loading / calculating */
+@keyframes subtle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-subtle-pulse {
+  animation: subtle-pulse 2s ease-in-out infinite;
+}
+
+/* Spin on hover */
+.hover-rotate:hover {
+  transform: rotate(180deg);
+}
+
+/* Shimmer loading effect */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(99, 102, 241, 0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Rank badges */
+.rank-gold { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+.rank-silver { background: linear-gradient(135deg, #94a3b8, #cbd5e1); }
+.rank-bronze { background: linear-gradient(135deg, #d97706, #f59e0b); }
+
+/* Smooth transitions everywhere */
+*, *::before, *::after {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus ring */
+input:focus, select:focus, button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4);
+}

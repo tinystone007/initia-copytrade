@@ -108,61 +108,90 @@ export function Trade() {
     ? 'Execute as Leader (Copies Followers)'
     : 'Swap'
 
+  const totalReserve = reserveA + reserveB
+  const ratioA = totalReserve > 0n ? Number(reserveA * 100n / totalReserve) : 50
+
   return (
     <div className="max-w-lg mx-auto">
-      <h1 className="text-3xl font-bold text-white mb-2">Trade</h1>
-      <p className="text-gray-400 mb-8">Swap tokens on the CopyTrade AMM</p>
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-extrabold tracking-tight mb-2">
+          <span className="gradient-text">Trade</span>
+        </h1>
+        <p className="text-slate-400">Swap tokens on the CopyTrade AMM</p>
+      </div>
 
-      <div className="bg-slate-900 rounded-2xl p-6 border border-slate-700">
-        <TokenInput
-          label="You Pay"
-          token={tokenIn}
-          amount={amountStr}
-          balance={balanceIn as bigint | undefined}
-          onAmountChange={setAmountStr}
-          onTokenChange={t => { setTokenIn(t); if (t.symbol === tokenOut.symbol) setTokenOut(tokenIn) }}
-        />
+      {/* Swap card */}
+      <div className="glass-card rounded-3xl p-6 glow-indigo">
+        {/* You Pay */}
+        <div className="mb-1">
+          <TokenInput
+            label="You Pay"
+            token={tokenIn}
+            amount={amountStr}
+            balance={balanceIn as bigint | undefined}
+            onAmountChange={setAmountStr}
+            onTokenChange={t => { setTokenIn(t); if (t.symbol === tokenOut.symbol) setTokenOut(tokenIn) }}
+          />
+        </div>
 
-        <div className="flex justify-center -my-2 relative z-10">
+        {/* Flip button */}
+        <div className="flex justify-center -my-3 relative z-10">
           <button
             onClick={handleFlip}
-            className="bg-slate-700 border border-slate-600 rounded-lg p-2 hover:bg-slate-600 transition"
+            className="w-10 h-10 rounded-xl bg-[rgba(15,23,42,0.8)] border border-white/[0.08] hover:border-indigo-500/40 flex items-center justify-center transition-all duration-300 hover-rotate hover:bg-indigo-500/10 hover:shadow-lg hover:shadow-indigo-500/10"
           >
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
             </svg>
           </button>
         </div>
 
-        <TokenInput
-          label="You Receive"
-          token={tokenOut}
-          amount={amountOut > 0n ? formatAmount(amountOut, tokenOut.decimals) : ''}
-          balance={balanceOut as bigint | undefined}
-          onAmountChange={() => {}}
-          readOnly
-        />
+        {/* You Receive */}
+        <div className="mt-1">
+          <TokenInput
+            label="You Receive"
+            token={tokenOut}
+            amount={amountOut > 0n ? formatAmount(amountOut, tokenOut.decimals) : ''}
+            balance={balanceOut as bigint | undefined}
+            onAmountChange={() => {}}
+            readOnly
+          />
+        </div>
+
+        {/* Output estimate pulse */}
+        {amountIn > 0n && amountOut === 0n && pairId && (
+          <div className="text-center py-2 animate-subtle-pulse">
+            <span className="text-sm text-slate-500">Calculating estimate...</span>
+          </div>
+        )}
 
         {/* Leader toggle */}
         {isTrader && (
-          <label className="flex items-center gap-3 mt-4 p-3 bg-indigo-600/10 border border-indigo-500/30 rounded-lg cursor-pointer">
+          <label className="flex items-center gap-3 mt-5 p-4 rounded-2xl cursor-pointer transition-all duration-300 border border-transparent bg-purple-500/[0.06] hover:bg-purple-500/[0.1] hover:border-purple-500/20"
+            style={asLeader ? { background: 'rgba(139, 92, 246, 0.12)', borderColor: 'rgba(139, 92, 246, 0.3)' } : {}}
+          >
+            <div className={`relative w-11 h-6 rounded-full transition-colors duration-300 shrink-0 ${asLeader ? 'bg-gradient-to-r from-indigo-500 to-purple-500' : 'bg-white/[0.1]'}`}>
+              <div className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-lg transition-transform duration-300 ${asLeader ? 'translate-x-5' : ''}`} />
+            </div>
             <input
               type="checkbox"
               checked={asLeader}
               onChange={e => setAsLeader(e.target.checked)}
-              className="w-4 h-4 accent-indigo-500"
+              className="sr-only"
             />
             <div>
-              <div className="text-sm text-indigo-400 font-medium">Execute as Leader Trade</div>
-              <div className="text-xs text-gray-400">Automatically copies this trade for all your followers</div>
+              <div className="text-sm font-medium text-purple-300">Execute as Leader Trade</div>
+              <div className="text-xs text-slate-500">Automatically copies this trade for all your followers</div>
             </div>
           </label>
         )}
 
+        {/* Swap button */}
         <button
           onClick={handleSwap}
           disabled={!address || amountIn <= 0n || !pairId || swapping || confirming}
-          className="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 disabled:text-gray-500 text-white py-3 rounded-xl font-medium transition"
+          className="w-full mt-5 gradient-btn text-white py-3.5 rounded-2xl font-semibold text-sm tracking-wide"
         >
           {buttonText}
         </button>
@@ -170,11 +199,31 @@ export function Trade() {
 
       {/* Pool info */}
       {pairId && reserveA > 0n && (
-        <div className="mt-4 bg-slate-800 rounded-xl p-4 border border-slate-700 text-sm">
-          <div className="text-gray-400 mb-2">Pool Reserves</div>
-          <div className="flex justify-between text-gray-300">
-            <span>{tokenIn.symbol}: {formatAmount(reserveA, tokenIn.decimals)}</span>
-            <span>{tokenOut.symbol}: {formatAmount(reserveB, tokenOut.decimals)}</span>
+        <div className="mt-5 glass-card rounded-2xl p-5">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium text-slate-400">Pool Reserves</span>
+            <span className="text-xs text-slate-500">0.3% fee</span>
+          </div>
+
+          {/* Progress bar */}
+          <div className="h-2 rounded-full bg-white/[0.06] overflow-hidden mb-3">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
+              style={{ width: `${ratioA}%` }}
+            />
+          </div>
+
+          <div className="flex justify-between text-sm">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-indigo-400" />
+              <span className="text-slate-300">{tokenIn.symbol}</span>
+              <span className="text-slate-500">{formatAmount(reserveA, tokenIn.decimals)}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-slate-500">{formatAmount(reserveB, tokenOut.decimals)}</span>
+              <span className="text-slate-300">{tokenOut.symbol}</span>
+              <span className="w-2 h-2 rounded-full bg-purple-400" />
+            </div>
           </div>
         </div>
       )}
